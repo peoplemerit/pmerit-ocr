@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Project</title>
+</head>
+<body>
+
+<h2>Upload an Image for Text Extraction</h2>
+<form action="/upload-image" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*">
+    <button type="submit">Upload Image</button>
+</form>
+
+<h2>Enter Text for NLP Analysis</h2>
+<form id="text-form">
+    <textarea name="text" rows="5" cols="50"></textarea><br>
+    <button type="submit">Analyze Text</button>
+</form>
+
+<div id="results"></div>
+
+<script>
+document.getElementById("text-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const text = event.target.text.value;
+
+    const response = await fetch("/analyze-text", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ text })
+    });
+    
+    const data = await response.json();
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = `
+        <h3>Analysis Results</h3>
+        <p><strong>Sentiment:</strong> ${data.sentiment[0].label}</p>
+        <p><strong>Summary:</strong> ${data.summary}</p>
+    `;
+});
+</script>
+
+</body>
+</html>
